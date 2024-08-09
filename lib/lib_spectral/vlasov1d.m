@@ -17,7 +17,7 @@ params.ny           = params.nv;
 
 time = 0;
 it   = 1;
-it_hist = 1;
+it_hist = 1; 
 it_log   = 1;
 % initialize grid, wavenumbers, etc
 params = geometry_wavenumbers(params);
@@ -30,7 +30,7 @@ params.kv = params.ky;
 [~,params.VP] = meshgrid(params.x,params.v_periodic);
 % initial condition
 [phi,f] = inicond_vlasov(params);
-
+ 
 % compute inital electric field
 fk = fft2(f);
 tic();
@@ -62,6 +62,9 @@ hist_log = "";
 ie = 0;
 dt_mean = 0;
 tic();
+
+% save pltos when time  = 1, 4, 8, 15
+ 
 while (time < params.T_end)
     % checks cfl criteria and condition for logging and backupsaves
     dt = give_time_step(params, Efield, time);
@@ -146,7 +149,10 @@ while (time < params.T_end)
         %colormap(PaletteMarieAll('Vorticity',600,0.3,50,0.3));
         %farge_color();
         shading interp
+ 
     end
+    
+ 
 end
 params.freqs = rk;
 fhist = params.fhist;
@@ -213,13 +219,36 @@ if params.v_periodic
 else
     [u(:,:,1), u(:,:,2)] = meshgrid(params.v,dphi_x);
 end
-nlk = fft2(u(:,:,1).*cofitxy(1i*params.Kx.* fk) + u(:,:,2).*cofitxy(1i*params.Ky.*fk));
+ 
+nlk = -fft2(u(:,:,1).*cofitxy(1i*params.Kx.* fk) + u(:,:,2).*cofitxy(1i*params.Ky.*fk));
+ 
+if params.use_source_term  
+    f = cofitxy(fk);
+    fM = calc_maxwellian(f, params.R_const, params, params.V);
+    s_f = (1 / params.tau) * (fM - f);
+    % Add collision term to non-linear terms
+    nlk = nlk + fft2(s_f);
+end 
 
 % delete aliased modes
 nlk = dealias(params,nlk);
 
+function [fM] = calc_maxwellian(f,Rconst,params,Vgrid)
+rho     = params.dv*sum(f,2); % trapez rule for periodic system is just the sum, sum over the velocity
+Umacro  = params.dv*sum(f.*Vgrid,2)./rho;
+Ekin    = 0.5*params.dv*sum(f.*Vgrid.^2,2);
+T = 2/Rconst*(Ekin./rho-0.5*Umacro.^2);
+if any(T<0)
+    keyboard;
+end 
+% note fM will be of size Nx x Nv, although Umacro,T,rho are just vectors,
+% matlab automatically does the right operation here since M2G is of size
+% Nx x Nv
+fM = rho./(2*pi*Rconst*T).^0.5 .* exp(-(Vgrid-Umacro ).^2./(2*Rconst*T));
+end
+
 % emergency brake
-if (max(max(max(abs(u))))>1e3)
+if (max(max(max(abs(u))))>1e4)
     error('diverged..')
 end
 end

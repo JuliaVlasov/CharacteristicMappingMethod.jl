@@ -24,12 +24,15 @@ params.dom = [0, 0, params.Lx, 2*params.Lv];                                % do
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 params.CFL          = 0.8;
 params.T_end        = 50;
-params.dt           = 0.001/10;
+params.dt           = 0.0001;
 params.iplot        = 100; % plot every iplot time steps
 params.ihist        = 100; % only used if dt_hist not set
 params.ilog         = 10;  %only used if dt_log not set
 params.dt_hist      = 1;
 params.dt_log       = 0.1;
+params.tau          = 0.1;
+params.use_source_term  = 1; % 1 is on 
+params.R_const      = 1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 params.bump_transition_width = 0.1*params.Lv;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
