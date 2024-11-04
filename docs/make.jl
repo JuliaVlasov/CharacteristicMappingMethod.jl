@@ -4,7 +4,7 @@ using CharacteristicMappingMethod
 makedocs(
     sitename = "CharacteristicMappingMethod",
     format = Documenter.HTML(),
-    modules = [CharacteristicMappingMethod]
+    modules = [CharacteristicMappingMethod],
 )
 
 deploydocs(
