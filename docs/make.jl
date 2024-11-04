@@ -9,5 +9,4 @@ makedocs(
 
 deploydocs(
     repo = "github.com/juliavlasov/CharacteristicMappingMethod.jl",
-    devbranch = "develop",
 )
