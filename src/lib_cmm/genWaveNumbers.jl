@@ -6,7 +6,7 @@ function genWaveNumbers(dom, gsz)
     MY = gsz[1]
 
     kxn = fftfreq(MX, MX)
-    kyn = fftfreq(MY, MY)'
+    kyn = fftfreq(MY, MY)
 
     rx = 2pi * 1im ./ dom[3]
     ry = 2pi * 1im ./ dom[4]

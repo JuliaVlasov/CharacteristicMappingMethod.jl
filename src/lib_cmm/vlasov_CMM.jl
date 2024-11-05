@@ -58,14 +58,14 @@ function vlasov_main(params)
     #----------------------------------------
     # GRID Initialization
     #----------------------------------------
-    mgsz = params.Nmap * [1 1]         # grid points of the map
-    vgsz = params.Nsampling * [1 1]     # grid of velocity (here same as sampling grid)
-    sgsz = params.Nsampling * [1 1]    # grid for sampling f
-    pgsz = params.Nplotting * [1 1]    # grid for plotting f
-    fgsz = params.Nfine * [1 1]        # fine grid for saving;
+    @show mgsz = params.Nmap * [1, 1]      # grid points of the map
+    @show vgsz = params.Nsampling * [1, 1] # grid of velocity (here same as sampling grid)
+    @show sgsz = params.Nsampling * [1, 1] # grid for sampling f
+    @show pgsz = params.Nplotting * [1, 1] # grid for plotting f
+    @show fgsz = params.Nfine * [1, 1]     # fine grid for saving;
 
 
-    params.grid = set_grids(
+    grid_list = set_grids(
         params,
         (mgsz, vgsz, sgsz, pgsz, fgsz),
         ["map", "velocity", "sampling", "plotting", "fine"],
